@@ -1,10 +1,7 @@
 import 'package:chat/screens/chat_screen.dart';
+import 'package:chat/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import '../constants.dart';
-import '../roundbutton.dart';
-import 'chatlist.dart';
 
 class LoginScreen extends StatefulWidget {
   static String id = '/login';
@@ -13,79 +10,163 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String email, password;
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  GlobalKey formKey = GlobalKey<FormState>();
 
-  bool showSpinner = false;
-
-  final _auth = FirebaseAuth.instance;
+  bool loading = false;
+  AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: 0.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Hero(
-                tag: 'logo',
+              Container(
+                padding: EdgeInsets.only(left: 0.0),
+                margin: EdgeInsets.only(top: 0.0),
                 child: Container(
-                  height: 200.0,
-                  child: Image.asset('images/logo.png'),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[200],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100.0),
+                    ),
+                  ),
+                  height: 300.0,
+                ),
+              ),
+              Center(
+                child: Hero(
+                  tag: 'logo',
+                  child: Container(
+                    height: 100.0,
+                    child: Icon(
+                      Icons.chat,
+                      color: Colors.green,
+                      size: 100.0,
+                    ),
+                  ),
                 ),
               ),
               SizedBox(
                 height: 48.0,
               ),
-              TextField(
-                  keyboardType: TextInputType.emailAddress,
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    //Do something with the user input.
-                    email = value;
-                  },
-                  decoration: kTextFieldDecoration.copyWith(
-                      hintText: 'Enter your email')),
-              SizedBox(
-                height: 8.0,
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 44.0),
+                      child: TextFormField(
+                        controller: email,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.blue[50],
+                          hintText: 'Email',
+                          hintStyle: TextStyle(color: Colors.black),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          border: UnderlineInputBorder(),
+                          enabledBorder: UnderlineInputBorder(),
+                          focusedBorder: UnderlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 44.0),
+                      child: TextFormField(
+                        controller: password,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.blue[50],
+                          hintText: 'Password',
+                          hintStyle: TextStyle(color: Colors.black),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          border: UnderlineInputBorder(),
+                          enabledBorder: UnderlineInputBorder(),
+                          focusedBorder: UnderlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              TextField(
-                  textAlign: TextAlign.center,
-                  obscureText: true,
-                  onChanged: (value) {
-                    //Do something with the user input.
-                    password = value;
-                  },
-                  decoration: kTextFieldDecoration.copyWith(
-                      hintText: 'Enter your password')),
               SizedBox(
                 height: 24.0,
               ),
-              RoundButton(
-                color: Colors.lightBlueAccent,
-                title: 'Log In',
-                onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
-                  try {
-                    final user = await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
-                    if (user != null) {
-                      Navigator.pushNamed(context, ChatScreen.id);
-                    }
-                    setState(() {
-                      showSpinner = false;
-                    });
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-              ),
+              loading == false
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 44.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                        child: Text("Log In"),
+                        onPressed: () async {
+                          setState(() {
+                            loading = true;
+                          });
+                          try {
+                            final user =
+                                _authService.login(email.text, password.text);
+                            if (user != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.lightGreenAccent[400],
+                                  content: Text(
+                                    'Login successful',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                              Navigator.pushNamed(context, ChatScreen.id);
+                            }
+                            setState(() {
+                              loading = false;
+                            });
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                    e,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            print(e);
+                            setState(() {
+                              loading = false;
+                            });
+                          }
+                        },
+                      ),
+                    )
+                  : Center(
+                      child: Container(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator()),
+                    ),
             ],
           ),
         ),

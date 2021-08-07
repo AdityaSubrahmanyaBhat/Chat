@@ -1,6 +1,6 @@
+import 'package:chat/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chat/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final _firestore = Firestore.instance;
@@ -44,22 +44,32 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: null,
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.close),
+              icon: Icon(Icons.logout),
               onPressed: () async {
-                //Implement logout functionality
-                await _auth.signOut();
-                Navigator.pop(context);
+                await _authService.logOut();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.lightGreenAccent[400],
+                    content: Text(
+                      'Log Out successful',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                );
               }),
         ],
-        title: Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text('Group Chat'),
+        backgroundColor: Colors.blue,
       ),
       body: SafeArea(
         child: Column(
@@ -68,32 +78,53 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             MessageStream(),
             Container(
-              decoration: kMessageContainerDecoration,
+              decoration: BoxDecoration(),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
-                      controller: textController,
-                      onChanged: (value) {
-                        //Do something with the user input.
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 5.0, bottom: 5.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: Colors.black)),
+                      child: TextField(
+                        controller: textController,
+                        onChanged: (value) {
+                          messageText = value;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          hintText: 'Type a message ',
+                          border: InputBorder.none,
+                        ),
+                      ),
                     ),
                   ),
-                  FlatButton(
-                    onPressed: () {
-                      textController.clear();
-                      //Implement send functionality.
-                      _firestore.collection('messages').add(({
-                            'text': messageText,
-                            'sender': loggedInUser.email
-                          }));
-                    },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
+                  Container(
+                    margin: EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.blue,
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        textController.clear();
+                        try {
+                          _firestore.collection('messages').add(({
+                                'text': messageText,
+                                'sender': loggedInUser.email
+                              }));
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -111,13 +142,10 @@ class MessageStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore.collection('messages').snapshots(),
-      // ignore: missing_return
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.lightBlueAccent,
-            ),
+            child: CircularProgressIndicator(),
           );
         }
         if (snapshot.hasData) {
@@ -141,6 +169,11 @@ class MessageStream extends StatelessWidget {
             ),
           );
         }
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }
@@ -165,20 +198,21 @@ class MessageBubble extends StatelessWidget {
           ),
           Material(
             borderRadius: BorderRadius.only(
-                topLeft: isMe ? Radius.circular(30.0) : Radius.circular(0.0),
-                topRight: isMe ? Radius.circular(0.0) : Radius.circular(30.0),
-                bottomRight: Radius.circular(30.0),
-                bottomLeft: Radius.circular(30.0)),
+                topLeft: isMe ? Radius.circular(10.0) : Radius.circular(0.0),
+                topRight: isMe ? Radius.circular(0.0) : Radius.circular(10.0),
+                bottomRight: Radius.circular(10.0),
+                bottomLeft: Radius.circular(10.0)),
             elevation: 5.0,
-            color: isMe ? Colors.lightBlueAccent : Colors.white,
+            color: isMe ? Colors.lightBlueAccent : Colors.grey[300],
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               child: Text(
                 text,
                 style: TextStyle(
-                    fontSize: 15.0,
-                    color: isMe ? Colors.white : Colors.black54),
+                  fontSize: 15.0,
+                  color: isMe ? Colors.white : Colors.black,
+                ),
               ),
             ),
           ),

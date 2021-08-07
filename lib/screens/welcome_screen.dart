@@ -1,9 +1,6 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat/screens/login_screen.dart';
 import 'package:chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
-
-import '../roundbutton.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static String id = '/welcome';
@@ -11,84 +8,108 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
-    with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation animation;
+class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    controller = AnimationController(
-      duration: Duration(seconds: 1),
-      vsync: this,
-    );
-
-    animation = ColorTween(begin: Colors.blueGrey, end: Colors.white)
-        .animate(controller);
-
-    controller.forward();
-    controller.addListener(() {
-      setState(() {});
-      print(controller.value);
-    });
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white.withOpacity(controller.value),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Hero(
-                  tag: 'logo',
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
-                    height: 60.0,
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 0.0),
+          child: Column(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(left: 0.0),
+                margin: EdgeInsets.only(top: 0.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue[200],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100.0),
+                    ),
                   ),
+                  height: 300.0,
                 ),
-                TypewriterAnimatedTextKit(
-                  text: ['Flash Chat'],
-                  speed: Duration(milliseconds: 300),
-                  textStyle: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
+              ),
+              SizedBox(
+                height: 50.0,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Row(
+                  children: <Widget>[
+                    Hero(
+                      tag: 'logo',
+                      child: Container(
+                        child: Icon(
+                          Icons.chat,
+                          color: Colors.green,
+                          size: 50.0,
+                        ),
+                        height: 60.0,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    Text(
+                      'Chatso',
+                      style: TextStyle(
+                        fontSize: 45.0,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 48.0,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
                   ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 48.0,
-            ),
-            RoundButton(
-              color: Colors.lightBlueAccent,
-              title: 'Log In',
-              onPressed: () {
-                Navigator.pushNamed(context, LoginScreen.id);
-              },
-            ),
-            RoundButton(
-              color: Colors.blueAccent,
-              title: 'Register',
-              onPressed: () {
-                Navigator.pushNamed(context, RegistrationScreen.id);
-              },
-            ),
-          ],
+                  onPressed: () {
+                    Navigator.pushNamed(context, LoginScreen.id);
+                  },
+                  child: Text('Log In'),
+                ),
+              ),
+              SizedBox(
+                height: 30.0,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, RegistrationScreen.id);
+                  },
+                  child: Text('Register'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
