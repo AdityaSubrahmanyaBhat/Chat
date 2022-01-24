@@ -1,16 +1,13 @@
-# chat
+# Chat
+| Screenshot |
+|------------|   
+| <img src="https://user-images.githubusercontent.com/70971391/150761787-84c0c4be-8ae3-4c7b-8caf-1c41ccc36686.jpg" height="400px"> |
 
-A new Flutter application.
+| Screenshot |
+|------------|   
+| <img src="https://user-images.githubusercontent.com/70971391/150761830-6f1ac784-3420-418f-a902-4960b2bbf095.jpg" height="400px"> |
 
-## Getting Started
+| Screenshot |
+|------------|   
+| <img src="https://user-images.githubusercontent.com/70971391/150761859-d60e7d7c-4fcc-4844-b7fd-c22936208951.jpg" height="400px"> |
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
