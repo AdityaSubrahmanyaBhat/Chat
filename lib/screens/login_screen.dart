@@ -1,3 +1,4 @@
+import 'package:chat/constants/consts.dart';
 import 'package:chat/screens/chat_screen.dart';
 import 'package:chat/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,17 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         controller: email,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.blue[50],
-                          hintText: 'Email',
-                          hintStyle: TextStyle(color: Colors.black),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 20.0),
-                          border: UnderlineInputBorder(),
-                          enabledBorder: UnderlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(),
-                        ),
+                        decoration: inputDecoration.copyWith(hintText: 'Email'),
                       ),
                     ),
                     SizedBox(
@@ -84,21 +75,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 44.0),
                       child: TextFormField(
-                        controller: password,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.blue[50],
-                          hintText: 'Password',
-                          hintStyle: TextStyle(color: Colors.black),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 20.0),
-                          border: UnderlineInputBorder(),
-                          enabledBorder: UnderlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(),
-                        ),
-                      ),
+                          controller: password,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: true,
+                          decoration:
+                              inputDecoration.copyWith(hintText: 'Password')),
                     ),
                   ],
                 ),
@@ -144,16 +125,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Text(
-                                    e,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  e,
+                                  style: TextStyle(
+                                    color: Colors.black,
                                   ),
                                 ),
-                              );
+                              ),
+                            );
                             print(e);
                             setState(() {
                               loading = false;
