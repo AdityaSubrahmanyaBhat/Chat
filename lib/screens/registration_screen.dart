@@ -1,6 +1,6 @@
+import 'package:chat/constants/consts.dart';
 import 'package:chat/screens/chat_screen.dart';
 import 'package:chat/services/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -73,17 +73,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         controller: email,
                         keyboardType: TextInputType.visiblePassword,
                         obscureText: false,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.blue[50],
-                          hintText: 'Email',
-                          hintStyle: TextStyle(color: Colors.black),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 20.0),
-                          border: UnderlineInputBorder(),
-                          enabledBorder: UnderlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(),
-                        ),
+                        decoration: inputDecoration.copyWith(hintText: 'Email'),
                       ),
                     ),
                     SizedBox(
@@ -98,17 +88,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         controller: password,
                         keyboardType: TextInputType.visiblePassword,
                         obscureText: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.blue[50],
-                          hintText: 'Password',
-                          hintStyle: TextStyle(color: Colors.black),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 20.0),
-                          border: UnderlineInputBorder(),
-                          enabledBorder: UnderlineInputBorder(),
-                          focusedBorder: UnderlineInputBorder(),
-                        ),
+                        decoration:
+                            inputDecoration.copyWith(hintText: 'Password'),
                       ),
                     ),
                   ],
@@ -157,16 +138,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           } catch (e) {
                             print(e);
                             ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Text(
-                                    e,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  e,
+                                  style: TextStyle(
+                                    color: Colors.black,
                                   ),
                                 ),
-                              );
+                              ),
+                            );
                             setState(() {
                               loading = false;
                             });

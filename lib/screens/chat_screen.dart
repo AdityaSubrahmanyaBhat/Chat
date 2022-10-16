@@ -109,7 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       borderRadius: BorderRadius.circular(20.0),
                       color: Colors.blue,
                     ),
-                    child: FlatButton(
+                    child: MaterialButton(
                       onPressed: () {
                         textController.clear();
                         try {
